@@ -1,73 +1,72 @@
-# [CloudConnect SDK](https://www.easefilter.com/Forums_Files/CloudStorageConnect.htm)
-## The challenges to connect the public cloud storage
-Enterprises are increasingly adopting cloud storage options because they need more capacity, elastic capacity and a better way to manage storage costs over time. The growing amount of enterprise data is proving too difficult for IT departments to manage using their data center alone. Migrating and managing your data storage in the cloud can offer significant value to the business. A cloud storage migration is when a company moves some or all of its local data into the cloud, usually to run on the cloud-based infrastructure provided by a cloud service provider such as AWS and Azure.The main challenge of the cloud storage migration here is how to carry out your migration with minimal disruption to normal operation, at the lowest cost, and over the shortest period of time. If your data becomes inaccessible to users during a migration, you risk impacting your business operations.The biggest challenge of the cloud storage migration for most small to medium size companies is the application redevelopment to adopt the cloud storage, most companies can't afford the expense. CloudTier Cloud Connect provides a complete solution to transparently connect to Amazon S3 storage and Azure storage. CloudTier uses the cloud storage as second tier, it can automatically to move data between local and the cloud, so your application doesn't need to do any change, it can access the cloud storage just like the local one transparently.
+# CloudTier Storage Gateway SDK ☁️
 
-## Cloud storage tiering technology
-The Cloud storage tiering was implemented with tiered storage file system filter driver. A file system filter driver intercepts requests targeted at a file system or another file system filter driver. By intercepting the request before it reaches its intended target, the filter driver can extend or replace functionality provided by the original target of the request. File system filtering services are available through the filter manager in Windows. The CloudTier tiered storage filter driver can intercept the file I/O to the local storage and redirect it to the remote cloud storage by implementing the file system filtering functionalities which was provided by the Filter Manager framework.
+[![Platform](https://img.shields.io/badge/Platform-Windows-blue.svg)]()
+[![Language](https://img.shields.io/badge/Language-C%23%20%7C%20C++%20%7C%20Python%20%7C%20Rust%20%7C%20Java-success.svg)]()
+[![License](https://img.shields.io/badge/License-Commercial-orange.svg)]()
 
-![loudTier Storage Tiering Architecture](https://www.easefilter.com/images/CloudTiering.png)
+**CloudTier Storage Gateway** is a transparent cloud storage integration and automated tiering solution. By utilizing a tiered storage file system filter driver, it intercepts local file I/O requests and seamlessly redirects them to remote cloud storage (such as Amazon S3 or Microsoft Azure). 
 
-## Hierarchical storage management
-CloudTier Cloud Storage Connect is a data storage technique which automatically moves data between high-cost local disk and low-cost remote cloud storage. CloudTier Cloud Storage Connect can help simplify the migration process by providing the transparent file access from the remote storage. Using the cloud as a storage tier, data can first be moved to a ‘warm’ archive tier of higher-performance disk, where it can still be accessed quickly to meet RPO and RTO SLA’s. As you retain archives for longer, older data can then be moved to a ‘cold’ archive tier with better economics. (This is similar to the tiered storage cost/performance model offered by Amazon S3 with its “warm” Standard tier, “cold” Infrequent Access tier and “frozen” Glacier tier.)
+This allows your applications to interact with limitless cloud storage exactly as they would with local on-premise disks—**requiring absolutely zero changes to your application code.**
 
-## Integrate your exiting on-premises applications with remote cloud storage transparently                     
-Our CloudTier Cloud Storage Connect service can connect an on-premise software appliance with cloud-based storage to integrate your existing on-premises applications with the remote cloud storage infrastructure in a seamless, secure, and transparent fashion.There are no interruption to migrate your on-premise files to the remote cloud storage, don't need to change your existing applications and infrastructure.
+---
 
-1.	Set up file cloud migration policies based on the file type, file size, file attributes.
-2.	Create stub file based on the policies after the file was migrated to the cloud storage, it can free up the space from on-premise storage.
-3.	Transparent the cloud storage access by reading the stub file for your local application.
-4.	Transparent moving data back from remote cloud storage to the local, re-hydrate the stub file for the recent access file based on the policies.
+## ✨ Key Features
 
-## Cloud archiving solution for unstructured data
+* **Transparent Integration:** Applications access cloud storage natively through the local file system. No API integration or app redevelopment is required.
+* **Automated Storage Tiering:** Automatically moves data between high-performance, high-cost local disks (warm tier) and low-cost remote cloud storage (cold tier) based on custom policies (file size, type, or attributes).
+* **Zero-Disruption Migration:** Migrates data to the cloud in the background. It replaces local files with lightweight "stub" files to free up local space, re-hydrating them automatically upon user access.
+* **Multi-Cloud Support:** Out-of-the-box support for **Amazon S3** and **Microsoft Azure Storage**.
+* **High Performance:** Supports parallel/multi-part upload and download tasks for accelerated data transfer.
+* **Cloud Storage Explorer:** Built-in GUI tool to seamlessly view, upload, and manage files across different cloud providers.
 
-Cloud archiving is the process of moving data to secondary storage in the cloud, the potential benefits of cloud archiving include lower costs and easier access, no interruption and change to your existing applications and infrastructure. Automatically archive, manage and secure all your organization’s files to the cloud, transparently access your archived
+---
 
-![loudTier Storage Tiering Solution](https://www.easefilter.com/images/CloudTier.png)
+## 🏗️ How It Works (Storage Tiering)
 
-## CloudConnect example is a simple C# Windows forms application, to demo how to connect the cloud storage as the second tier. 
-The example can generate some stub files. To handle the read request of the stub file, we need to register the callback function for the file system filter driver. When the stub file was accessed, the callback function will be invoked, the callback function will retrieve the data from the remote server and send back to the filter driver.
+CloudTier implements a Windows file system filter driver (via the Filter Manager framework) to intercept file I/O targeted at local storage. 
+1. **Migrate:** Based on configured policies, local files are safely migrated to the cloud.
+2. **Stub:** The local file is converted into a "stub file" that takes up 0 bytes on the local disk but retains all file metadata.
+3. **Access:** When a user or application tries to open the stub file, the filter driver intercepts the read request, transparently fetches the data from the cloud, and serves it to the application.
 
-## How to run the CloudConnect demo?
+---
 
-1.	Create the stub files first, go to tools->create stub test files.
-	By creating the stub file, you can move out your data to low-cost remote storage, 
-        
-2.	The test source folder stores the file data to simulate the remote host server. 
-	You can store your source file data anywhere, i.e. Amazon s3, Azure storage or your own private cloud storage.
+## 🚀 Setup & Configuration
 
-3.	The test stub file folder stores the test stub files.
-	The stub file doesn't take the storage space, it only keeps the meta data you created.
+### 1. Amazon S3 Connection
+1. Obtain your **Access Key ID** and **Secret Access Key** from the AWS S3 Console.
+2. In the Gateway settings, select `Amazon_S3` as the provider and click **Add Site**.
+3. Enter your Site Name, Access/Secret keys, and AWS Region.
+4. *(Optional)* Enable **Upload multiple parts** and **Parallel download**, then specify the number of parallel tasks to optimize speed.
+5. Click **Apply** and then **Test Connection**.
 
-4.	After the stub files were created, start the filter service. The stub files can be read as a regular file, when you open the stub file, 
-	all data will read from the source file by the demo application.
+### 2. Microsoft Azure Storage Connection
+1. Obtain your **Connection String** from the Microsoft Azure Dashboard Portal.
+2. Select `AzureStorage` as the cloud provider and click **Add Site**.
+3. Enter your Site Name and paste the Connection String.
+4. *(Optional)* Enable **Upload multiple blobs** and **Parallel download**, adjusting task counts as needed.
+5. Click **Apply** and then **Test Connection**.
 
-5.	For demo purpose, the new stub file’s reparse point tag always pointing to the source file, you can change it to your remote sever, or in the cloud.
+---
 
-## Connect Amazon S3 storage as second tier storage
+## 💻 Developer API: Cloud Provider Interface
 
-1.	Make sure you have a S3 key pair. You will need both the access key ID and the secret access key in order to continue. You can get them from the S3 console website.
-2.	Select Amazon_S3 cloud provider name. Click "Add Site" button to create a new site for the amazon s3 connection.
-3.	Put your site name and then enter your access key id and secret access key in the text boxes, choose the region in your setting.
-4.	Check the enable upload multiple parts box if you want to use parallel upload tasks for a file.
-5.	Check the enable parallel download box if you want to use parallel download tasks for a file.
-6.	Set the number of the parallel tasks for upload or download.
-7.	After filled in all the data, click apply to save the settings.
-8.	Click test connection to check if your setting is correct.
+The gateway connects to public clouds using a flexible `CloudProvider` class. While Amazon S3 and Azure Storage are natively implemented via the .NET SDK, you can easily extend this abstract class to support additional cloud providers:
 
-![Amazon S3 settings](https://www.easefilter.com/images/AmazonS3Settings.PNG)
+```csharp
+public abstract class CloudProvider : IDisposable 
+{
+    public abstract bool GetDirFileList();
+    public abstract bool AsyncDeleteFile();
+    public abstract bool AsyncDownload();
+    public abstract bool AsyncUpload();
+    public abstract bool AsyncMakeDir();
+    public abstract bool AsyncRenameFile();
+    public abstract bool AsyncDownloadDirectoryList();
+    public abstract bool IsDirectoryExist(string directoryName);
+}
+```
 
-## Connect Microsoft Azure storage as second tier storage
-
-1.	Get your connection string  from the Microsoft Azure Dashboard Portal site, by clicking on the link to the Dashboard website.
-2.	Select AzureStorage cloud provider name. Click "Add Site" button to create a new site for the Azure storage connection.
-3.	Put your site name and then enter your connection string in the text box.
-4.	Check the enable upload multiple blobs box if you want to use parallel upload tasks for a file.
-5.	Check the enable parallel download box if you want to use parallel download tasks for a file.
-6.	Set the number of the parallel tasks for upload or download.
-7.	After filled in all the data, click apply to save the settings.
-8.	Click test connection to check if your setting is correct.
-
-![Azure settings](https://www.easefilter.com/images/AzureSettings.PNG)
+---
 
 ## EaseFilter File System Filter Driver SDK Reference
 | Product Name | Description |
@@ -108,6 +107,17 @@ The example can generate some stub files. To handle the read request of the stub
 * [Filter Driver Developer Guide](https://www.easefilter.com/kb/DeveloperGuide.htm)
 * [MiniFilter Filter Driver Framework](https://www.easefilter.com/kb/minifilter-framework.htm)
 * [Isolation Filter Driver](https://www.easefilter.com/kb/Isolation_Filter_Driver.htm)
+
+## License
+
+This repository contains two distinct licensing categories:
+
+1. **Wrapper/Implementation Code (MIT License):** 
+   The source code, scripts, and configuration files provided directly in this repository are licensed under the [MIT License](LICENSE). You are free to modify, distribute, and use this specific integration code.
+
+2. **EaseFilter SDK (Commercial License):**
+   This project requires the EaseFilter SDK (including its binaries, filter drivers, and core libraries) to function. The EaseFilter SDK is **proprietary commercial software** and is strictly excluded from the MIT License.   
+   To use the EaseFilter SDK for commercial purposes or in a production environment, you must obtain a valid commercial license directly from [EaseFilter](https://www.easefilter.com/license.pdf).
 
 ## Support
 If you have questions or need help, please contact support@easefilter.com 
